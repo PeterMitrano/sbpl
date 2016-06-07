@@ -385,9 +385,9 @@ void EnvironmentNAVXYTHETALATTICE::ReadConfiguration(FILE* fCfg)
         throw SBPL_Exception("ERROR: ran out of env file early");
     }
 
-//    if (!bUseNonUniformAngles) {
-//        EnvNAVXYTHETALATCfg.StartTheta = ContTheta2Disc(atof(sTemp), EnvNAVXYTHETALATCfg.NumThetaDirs);
-//    }
+    if (!bUseNonUniformAngles) {
+        EnvNAVXYTHETALATCfg.StartTheta = ContTheta2Disc(atof(sTemp), EnvNAVXYTHETALATCfg.NumThetaDirs);
+    }
 
     EnvNAVXYTHETALATCfg.StartTheta_rad = atof(sTemp);
 
@@ -401,14 +401,13 @@ void EnvironmentNAVXYTHETALATTICE::ReadConfiguration(FILE* fCfg)
     {
         throw SBPL_Exception("ERROR: illegal start coordinates");
     }
-
-//    if (!NON_UNIFORM_ANGLES) {
-//        if (EnvNAVXYTHETALATCfg.StartTheta < 0 ||
-//        EnvNAVXYTHETALATCfg.StartTheta >= EnvNAVXYTHETALATCfg.NumThetaDirs)
-//        {
-//            throw SBPL_Exception("ERROR: illegal start coordinates for theta");
-//        }
-//    }
+    if (!bUseNonUniformAngles) {
+        if (EnvNAVXYTHETALATCfg.StartTheta < 0 ||
+        EnvNAVXYTHETALATCfg.StartTheta >= EnvNAVXYTHETALATCfg.NumThetaDirs)
+        {
+            throw SBPL_Exception("ERROR: illegal start coordinates for theta");
+        }
+    }
 
     // end(meters,rads):
     if (fscanf(fCfg, "%s", sTemp) != 1) {
@@ -426,9 +425,9 @@ void EnvironmentNAVXYTHETALATTICE::ReadConfiguration(FILE* fCfg)
         throw SBPL_Exception("ERROR: ran out of env file early");
     }
 
-//    if (!NON_UNIFORM_ANGLES) {
-//        EnvNAVXYTHETALATCfg.EndTheta = ContTheta2Disc(atof(sTemp), EnvNAVXYTHETALATCfg.NumThetaDirs);
-//    }
+    if (!bUseNonUniformAngles) {
+        EnvNAVXYTHETALATCfg.EndTheta = ContTheta2Disc(atof(sTemp), EnvNAVXYTHETALATCfg.NumThetaDirs);
+    }
 
     EnvNAVXYTHETALATCfg.EndTheta_rad = atof(sTemp);
 
@@ -442,19 +441,13 @@ void EnvironmentNAVXYTHETALATTICE::ReadConfiguration(FILE* fCfg)
     {
         throw SBPL_Exception("ERROR: illegal end coordinates");
     }
-    if (EnvNAVXYTHETALATCfg.EndTheta < 0 ||
-        EnvNAVXYTHETALATCfg.EndTheta >= EnvNAVXYTHETALATCfg.NumThetaDirs)
-    {
-        throw SBPL_Exception("ERROR: illegal goal coordinates for theta");
+    if (!bUseNonUniformAngles) {
+        if (EnvNAVXYTHETALATCfg.EndTheta < 0 ||
+            EnvNAVXYTHETALATCfg.EndTheta >= EnvNAVXYTHETALATCfg.NumThetaDirs)
+        {
+            throw SBPL_Exception("ERROR: illegal goal coordinates for theta");
+        }
     }
-
-//    if (!NON_UNIFORM_ANGLES) {
-//        if (EnvNAVXYTHETALATCfg.EndTheta < 0 ||
-//            EnvNAVXYTHETALATCfg.EndTheta >= EnvNAVXYTHETALATCfg.NumThetaDirs)
-//        {
-//            throw SBPL_Exception("ERROR: illegal goal coordinates for theta");
-//        }
-//    }
 
     // unallocate the 2d environment
     if (EnvNAVXYTHETALATCfg.Grid2D != NULL) {
