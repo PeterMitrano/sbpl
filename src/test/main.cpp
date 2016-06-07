@@ -45,6 +45,7 @@ enum PlannerType
     PLANNER_TYPE_RSTAR,
     PLANNER_TYPE_VI,
     PLANNER_TYPE_ANASTAR,
+    PLANNER_TYPE_MHASTAR,
 
     NUM_PLANNER_TYPES
 };
@@ -64,6 +65,8 @@ std::string PlannerTypeToStr(PlannerType plannerType)
         return std::string("vi");
     case PLANNER_TYPE_ANASTAR:
         return std::string("anastar");
+    case PLANNER_TYPE_MHASTAR:
+        return std::string("mhastar");
     default:
         return std::string("invalid");
     }
@@ -88,6 +91,9 @@ PlannerType StrToPlannerType(const char* str)
     }
     else if (!strcmp(str, "anastar")) {
         return PLANNER_TYPE_ANASTAR;
+    }
+    else if (!strcmp(str, "mhastar")) {
+        return PLANNER_TYPE_MHASTAR;
     }
     else {
         return INVALID_PLANNER_TYPE;
@@ -191,7 +197,7 @@ void PrintHelp(char** argv)
     printf("<env_t>                   One of 2d, xytheta, xythetamlev, robarm.\n");
     printf("[--planner=<planner_t>]   (optional) Select a planner to use for the example.\n");
     printf("                          The default is \"arastar\".\n");
-    printf("<planner_t>               One of arastar, adstar, rstar, anastar.\n");
+    printf("<planner_t>               One of arastar, adstar, rstar, anastar, mhastar.\n");
     printf("[--search-dir=<search_t>] (optional) Select the type of search to run. The default\n");
     printf("                          is \"backwards\".\n");
     printf("<search_t>                One of backward, forward.\n");
@@ -334,6 +340,10 @@ int plan2d(PlannerType plannerType, char* envCfgFilename, bool forwardSearch)
     case PLANNER_TYPE_ANASTAR:
         printf("Initializing anaPlanner...\n");
         planner = new anaPlanner(&environment_nav2D, bforwardsearch);
+        break;
+    case PLANNER_TYPE_MHASTAR:
+        printf("Initializing MHAPlanner...\n");
+        planner = new MHAPlanner(&environment_nav2D, bforwardsearch);
         break;
     default:
         printf("Invalid planner type\n");
@@ -517,6 +527,10 @@ int planxythetalat(PlannerType plannerType, char* envCfgFilename, char* motPrimF
         printf("Initializing anaPlanner...\n");
         planner = new anaPlanner(&environment_navxythetalat, bforwardsearch);
         break;
+    case PLANNER_TYPE_MHASTAR:
+        printf("Initializing MHAPlanner...\n");
+        planner = new MHAPlanner(&environment_navxythetalat, bforwardsearch);
+        break;
     default:
         printf("Invalid planner type\n");
         break;
@@ -550,15 +564,15 @@ int planxythetalat(PlannerType plannerType, char* envCfgFilename, char* motPrimF
     }
 
     // write the discrete solution to file
-    //	for (size_t i = 0; i < solution_stateIDs_V.size(); i++) {
-    //		int x;
-    //		int y;
-    //		int theta;
-    //		environment_navxythetalat.GetCoordFromState(solution_stateIDs_V[i], x, y, theta);
-    //
-    //		fprintf(fSol, "%d %d %d\t\t%.3f %.3f %.3f\n", x, y, theta,
-    //              DISCXY2CONT(x, 0.1), DISCXY2CONT(y, 0.1), DiscTheta2Cont(theta, 16));
-    //	}
+   	for (size_t i = 0; i < solution_stateIDs_V.size(); i++) {
+    		int x;
+    		int y;
+    		int theta;
+    		environment_navxythetalat.GetCoordFromState(solution_stateIDs_V[i], x, y, theta);
+
+        fprintf(fSol, "%d %d %d\t\t%.3f %.3f %.3f\n", x, y, theta,
+                DISCXY2CONT(x, 0.1), DISCXY2CONT(y, 0.1), DiscTheta2Cont(theta, 16));
+   	}
 
     // write the continuous solution to file
     vector<sbpl_xy_theta_pt_t> xythetaPath;
@@ -724,6 +738,10 @@ int planxythetamlevlat(PlannerType plannerType, char* envCfgFilename, char* motP
         printf("Initializing anaPlanner...\n");
         planner = new anaPlanner(&environment_navxythetalat, bforwardsearch);
         break;
+    case PLANNER_TYPE_MHASTAR:
+        printf("Initializing MHAPlanner...\n");
+        planner = new MHAPlanner(&environment_navxythetalat, bforwardsearch);
+        break;
     default:
         printf("Invalid planner type\n");
         break;
@@ -873,6 +891,10 @@ int planandnavigate2d(PlannerType plannerType, char* envCfgFilename)
     case PLANNER_TYPE_ANASTAR:
         printf("Initializing anaPlanner...\n");
         planner = new anaPlanner(&environment_nav2D, bforwardsearch);
+        break;
+    case PLANNER_TYPE_MHASTAR:
+        printf("Initializing MHAPlanner...\n");
+        planner = new MHAPlanner(&environment_nav2D, bforwardsearch);
         break;
     default:
         printf("Invalid planner type\n");
@@ -1201,6 +1223,10 @@ int planandnavigatexythetalat(PlannerType plannerType, char* envCfgFilename, cha
         printf("Initializing anaPlanner...\n");
         planner = new anaPlanner(&environment_navxythetalat, bforwardsearch);
         break;
+    case PLANNER_TYPE_MHASTAR:
+        printf("Initializing MHAPlanner...\n");
+        planner = new MHAPlanner(&environment_navxythetalat, bforwardsearch);
+        break;
     default:
         printf("Invalid planner type\n");
         break;
@@ -1474,6 +1500,10 @@ int planrobarm(PlannerType plannerType, char* envCfgFilename, bool forwardSearch
     case PLANNER_TYPE_ANASTAR:
         printf("Initializing anaPlanner...\n");
         planner = new anaPlanner(&environment_robarm, bforwardsearch);
+        break;
+    case PLANNER_TYPE_MHASTAR:
+        printf("Initializing MHAPlanner...\n");
+        planner = new MHAPlanner(&environment_robarm, bforwardsearch);
         break;
     default:
         printf("Invalid planner type\n");
